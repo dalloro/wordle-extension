@@ -1,0 +1,432 @@
+:root {
+    --color-correct: #6aaa64;
+    --color-present: #c9b458;
+    --color-absent: #3a3a3c;
+    --color-background: #121213;
+    --color-text: #ffffff;
+    --color-key-bg: #818384;
+    --color-border: #3a3a3c;
+    --tile-size: 40px;
+    --gap: 4px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 10px;
+    width: 400px;
+    height: 550px;
+    user-select: none;
+    overflow: hidden;
+    /* Prevent scrolling */
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 10px;
+    padding: 0 5px;
+    height: 40px;
+    width: 100%;
+}
+
+.header-left,
+.header-right {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 5px;
+}
+
+.header-right {
+    justify-content: flex-end;
+}
+
+h1 {
+    flex: 2;
+    text-align: center;
+    margin: 0;
+    font-size: 24px;
+    letter-spacing: 0.1em;
+}
+
+#restart-btn,
+#daily-btn,
+#analytics-btn {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#restart-btn {
+    font-size: 24px;
+}
+
+#daily-btn svg,
+#analytics-btn svg {
+    fill: var(--color-text);
+    width: 24px;
+    height: 24px;
+}
+
+#restart-btn:hover {
+    color: var(--color-correct);
+}
+
+#daily-btn:hover svg,
+#analytics-btn:hover svg {
+    fill: var(--color-correct);
+}
+
+#game-board {
+    display: grid;
+    grid-template-rows: repeat(6, 1fr);
+    gap: var(--gap);
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: repeat(5, var(--tile-size));
+    gap: var(--gap);
+}
+
+.tile {
+    width: var(--tile-size);
+    height: var(--tile-size);
+    border: 2px solid var(--color-border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: transform 0.2s, background-color 0.2s, border-color 0.2s;
+}
+
+.tile[data-state='active'] {
+    border-color: #565758;
+    animation: pop 0.1s;
+}
+
+.tile[data-state='correct'] {
+    background-color: var(--color-correct);
+    border-color: var(--color-correct);
+}
+
+.tile[data-state='present'] {
+    background-color: var(--color-present);
+    border-color: var(--color-present);
+}
+
+.tile[data-state='absent'] {
+    background-color: var(--color-absent);
+    border-color: var(--color-absent);
+}
+
+.tile.flip {
+    animation: flip 0.5s ease-in;
+}
+
+.tile.shake {
+    animation: shake 0.5s;
+}
+
+#keyboard-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
+.key {
+    background-color: var(--color-key-bg);
+    color: var(--color-text);
+    border: none;
+    border-radius: 4px;
+    padding: 0;
+    height: 40px;
+    min-width: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 13px;
+    position: relative;
+    /* For accent popup positioning */
+}
+
+.key.wide {
+    flex: 1.5;
+    font-size: 12px;
+}
+
+.key[data-state='correct'] {
+    background-color: var(--color-correct);
+}
+
+.key[data-state='present'] {
+    background-color: var(--color-present);
+}
+
+.key[data-state='absent'] {
+    background-color: var(--color-absent);
+}
+
+/* Accent Popup Styles */
+.accent-popup {
+    position: absolute;
+    bottom: 110%;
+    /* Just above the key */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4a4a4a;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 4px;
+    display: flex;
+    gap: 4px;
+    z-index: 100;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.accent-key {
+    width: 30px;
+    height: 40px;
+    background-color: #d3d6da;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+}
+
+.accent-key:hover {
+    background-color: #a6a6a6;
+}
+
+#message-container {
+    height: 30px;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.message {
+    background-color: white;
+    color: black;
+    padding: 10px 20px;
+    border-radius: 4px;
+    position: absolute;
+    top: 10%;
+    z-index: 10;
+    animation: fadeOut 2s forwards;
+    animation-delay: 1s;
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes flip {
+    0% {
+        transform: rotateX(0);
+    }
+
+    100% {
+        transform: rotateX(90deg);
+    }
+}
+
+@keyframes shake {
+    /* Animation properties typically defined elsewhere or inferred */
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+/* Hidden class for toggling visibility */
+.hidden {
+    display: none !important;
+}
+
+/* Analytics Overlay Styles */
+#analytics-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-background);
+    z-index: 50;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.analytics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.analytics-header h2 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: 0.1em;
+}
+
+#close-analytics-btn {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    font-size: 28px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+#close-analytics-btn:hover {
+    color: var(--color-correct);
+}
+
+#analytics-overlay h3 {
+    font-size: 14px;
+    margin: 20px 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+#analytics-overlay #stats-summary {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+#analytics-overlay .stat-box {
+    text-align: center;
+}
+
+#analytics-overlay .stat-value {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#analytics-overlay .stat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+}
+
+/* Guess Distribution in overlay */
+#analytics-overlay .dist-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+#analytics-overlay .dist-label {
+    width: 15px;
+    text-align: right;
+    margin-right: 5px;
+    font-size: 12px;
+}
+
+#analytics-overlay .dist-bar-container {
+    flex-grow: 1;
+}
+
+#analytics-overlay .dist-bar {
+    background-color: var(--color-absent);
+    color: white;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: right;
+    min-width: 15px;
+}
+
+#analytics-overlay .dist-bar.highlight {
+    background-color: var(--color-correct);
+}
+
+/* History table in overlay */
+.history-container {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+#analytics-overlay #history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+#analytics-overlay #history-table th,
+#analytics-overlay #history-table td {
+    text-align: left;
+    padding: 6px 4px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+#analytics-overlay #history-table th {
+    text-transform: uppercase;
+    font-size: 10px;
+}
+
+#analytics-overlay .result-won {
+    color: var(--color-correct);
+    font-weight: bold;
+}
+
+#analytics-overlay .result-lost {
+    color: #e65a5a;
+    font-weight: bold;
+}

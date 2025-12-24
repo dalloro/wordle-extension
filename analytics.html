@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle Analytics</title>
+    <link rel="stylesheet" href="analytics.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Statistics</h1>
+
+        <div id="stats-summary">
+            <div class="stat-box">
+                <div class="stat-value" id="games-played">0</div>
+                <div class="stat-label">Played</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="win-percentage">0</div>
+                <div class="stat-label">Win %</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="current-streak">0</div>
+                <div class="stat-label">Current Streak</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="max-streak">0</div>
+                <div class="stat-label">Max Streak</div>
+            </div>
+        </div>
+
+        <h2>Guess Distribution</h2>
+        <div id="guess-distribution">
+        </div>
+
+        <h2>History</h2>
+        <table id="history-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Word</th>
+                    <th>Result</th>
+                    <th>Attempts</th>
+                </tr>
+            </thead>
+            <tbody id="history-body">
+            </tbody>
+        </table>
+    </div>
+    <script src="analytics.js"></script>
+</body>
+
+</html>
