@@ -447,6 +447,10 @@ h1 {
     filter: drop-shadow(0 0 4px #e74c3c);
 }
 
+.christmas-mode #daily-btn {
+    display: none;
+}
+
 .christmas-mode .row {
     grid-template-columns: repeat(7, 32px);
 }
