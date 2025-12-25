@@ -432,18 +432,19 @@ h1 {
 }
 
 /* Christmas Mode Styles */
-#christmas-btn svg {
-    fill: var(--color-text);
-    width: 24px;
-    height: 24px;
+#christmas-btn {
+    font-size: 20px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
 }
 
-#christmas-btn:hover svg {
-    fill: #2ecc71;
+#christmas-btn:hover {
+    opacity: 1;
 }
 
-#christmas-btn.active svg {
-    fill: #e74c3c;
+#christmas-btn.active {
+    opacity: 1;
+    filter: drop-shadow(0 0 4px #e74c3c);
 }
 
 .christmas-mode .row {
