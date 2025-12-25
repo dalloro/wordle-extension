@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageContainer = document.getElementById('message-container');
 
     const MAX_GUESSES = 6;
-    const WORD_LENGTH = 5;
+    let WORD_LENGTH = 5;
+    let christmasMode = false;
 
     // Filter out plurals (specifically words ending with 'S')
     // We allow words ending in 'SS' (e.g. GLASS) and a whitelist of singular words ending in 'S'
@@ -15,13 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
         "ADIOS"
     ];
 
-    const GAME_WORDS = WORDS.filter(word => !word.endsWith('S') || word.endsWith('SS') || ALLOWED_S_WORDS.includes(word));
+    let GAME_WORDS = WORDS.filter(word => !word.endsWith('S') || word.endsWith('SS') || ALLOWED_S_WORDS.includes(word));
+    let GAME_WORDS_7 = typeof WORDS7 !== 'undefined' ? WORDS7 : [];
+
+    function getCurrentWordList() {
+        return christmasMode ? GAME_WORDS_7 : GAME_WORDS;
+    }
+
     let targetWord;
     let guesses = [];
     let currentGuess = [];
     let isGameOver = false;
 
-    // Initialize Game
     // Initialize Game call moved to end of file
 
     // Accent Map
@@ -63,6 +69,36 @@ document.addEventListener('DOMContentLoaded', () => {
     closeAnalyticsBtn.addEventListener('click', () => {
         analyticsOverlay.classList.add('hidden');
     });
+
+    const christmasBtn = document.getElementById('christmas-btn');
+    christmasBtn.addEventListener('click', () => {
+        toggleChristmasMode();
+        christmasBtn.blur();
+    });
+
+    function toggleChristmasMode() {
+        christmasMode = !christmasMode;
+        WORD_LENGTH = christmasMode ? 7 : 5;
+        document.body.classList.toggle('christmas-mode', christmasMode);
+        christmasBtn.classList.toggle('active', christmasMode);
+        rebuildBoard();
+        resetGame();
+        showMessage(christmasMode ? '🎄 Christmas Mode: 7 letters!' : 'Classic Mode: 5 letters');
+    }
+
+    function rebuildBoard() {
+        board.innerHTML = '';
+        for (let i = 0; i < MAX_GUESSES; i++) {
+            const row = document.createElement('div');
+            row.className = 'row';
+            for (let j = 0; j < WORD_LENGTH; j++) {
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                row.appendChild(tile);
+            }
+            board.appendChild(row);
+        }
+    }
 
     async function fetchWordOfTheDay() {
         try {
@@ -190,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const savedState = loadState();
         if (savedState && savedState.targetWord) {
             // Check if saved word is still valid
-            if (!GAME_WORDS.includes(savedState.targetWord)) {
+            if (!getCurrentWordList().includes(savedState.targetWord)) {
                 console.log('Saved target word is no longer valid, starting new game');
                 startNewGame();
                 return;
@@ -231,7 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startNewGame() {
-        targetWord = GAME_WORDS[Math.floor(Math.random() * GAME_WORDS.length)];
+        const wordList = getCurrentWordList();
+        targetWord = wordList[Math.floor(Math.random() * wordList.length)];
         guesses = [];
         currentGuess = [];
         isGameOver = false;
@@ -430,17 +467,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             const guessWord = currentGuess.join('');
-            if (!GAME_WORDS.includes(guessWord) && !WORDS.includes(guessWord)) {
-                // Check both lists? No, GAME_WORDS is the authority now.
-                // But wait, if we allow accents, are they in GAME_WORDS?
-                // Yes, GAME_WORDS is filtered from WORDS, which has accents.
-                if (!GAME_WORDS.includes(guessWord)) {
-                    showMessage('Not in word list');
-                    shakeRow();
-                    return;
-                }
-            } else if (!GAME_WORDS.includes(guessWord)) {
-                // Fallback if logic above was confusing
+            const wordList = getCurrentWordList();
+            if (!wordList.includes(guessWord)) {
                 showMessage('Not in word list');
                 shakeRow();
                 return;

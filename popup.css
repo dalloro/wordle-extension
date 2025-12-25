@@ -430,3 +430,37 @@ h1 {
     color: #e65a5a;
     font-weight: bold;
 }
+
+/* Christmas Mode Styles */
+#christmas-btn svg {
+    fill: var(--color-text);
+    width: 24px;
+    height: 24px;
+}
+
+#christmas-btn:hover svg {
+    fill: #2ecc71;
+}
+
+#christmas-btn.active svg {
+    fill: #e74c3c;
+}
+
+.christmas-mode .row {
+    grid-template-columns: repeat(7, 32px);
+}
+
+.christmas-mode .tile {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+}
+
+.christmas-mode h1::after {
+    content: ' 🎄';
+}
+
+.christmas-mode {
+    --color-correct: #27ae60;
+    --color-present: #e74c3c;
+}

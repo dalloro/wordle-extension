@@ -26,6 +26,7 @@ FILES=(
     "analytics.js"
     "logic.js"
     "words.js"
+    "words7.js"
     "icon-v2-16.png"
     "icon-v2-48.png"
     "icon-v2-128.png"

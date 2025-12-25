@@ -26,7 +26,7 @@ A Chrome extension that lets you play Wordle directly from your browser toolbar!
 - Press **Enter** to submit a guess
 - Press **Backspace** to delete letters
 - Click **⟳** to start a new random game
-- Click the **calendar icon** to play the Word of the Day
+- Click the **calendar icon** to play the official NYT Word of the Day
 - Click the **chart icon** to view your statistics
 
 ## Files
