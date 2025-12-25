@@ -77,13 +77,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function toggleChristmasMode() {
+        saveState(); // Save current game before switching
         christmasMode = !christmasMode;
         WORD_LENGTH = christmasMode ? 7 : 5;
         document.body.classList.toggle('christmas-mode', christmasMode);
-        christmasBtn.classList.toggle('active', christmasMode);
-        rebuildBoard();
-        resetGame();
+        const christmasBtn = document.getElementById('christmas-btn');
+        if (christmasBtn) {
+            christmasBtn.classList.toggle('active', christmasMode);
+        }
         showMessage(christmasMode ? '🎄 Christmas Mode: 7 letters!' : 'Classic Mode: 5 letters');
+
+        // Restore game for the new mode
+        initGame(true);
     }
 
     function rebuildBoard() {
@@ -222,59 +227,89 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function initGame() {
+    function initGame(isSwitchingModes = false) {
         const savedState = loadState();
 
-        if (savedState) {
-            // 1. Restore mode preference first
-            if (savedState.christmasMode !== undefined) {
-                christmasMode = savedState.christmasMode;
+        if (savedState && !isSwitchingModes) {
+            // Initial load: restore active mode
+            if (savedState.activeMode) {
+                christmasMode = savedState.activeMode === '7';
                 WORD_LENGTH = christmasMode ? 7 : 5;
                 document.body.classList.toggle('christmas-mode', christmasMode);
                 const christmasBtn = document.getElementById('christmas-btn');
                 if (christmasBtn) {
                     christmasBtn.classList.toggle('active', christmasMode);
                 }
-                rebuildBoard();
-            }
-
-            // 2. Restore game state if valid
-            if (savedState.targetWord) {
-                // Check if restored word is valid in current list
-                if (!getCurrentWordList().includes(savedState.targetWord)) {
-                    console.log('Saved target word is no longer valid, starting new game');
-                    startNewGame();
-                    return;
-                }
-
-                targetWord = savedState.targetWord;
-                guesses = savedState.guesses || [];
-                isGameOver = savedState.isGameOver || false;
-                console.log('Restored State:', savedState);
-
-                // Restore board UI
-                guesses.forEach((guess, index) => {
-                    const row = board.children[index];
-                    const tiles = row.children;
-                    for (let i = 0; i < WORD_LENGTH; i++) {
-                        tiles[i].textContent = guess[i];
-                    }
-                    restoreRowState(guess, index);
-                });
-
-                if (isGameOver) {
-                    if (guesses[guesses.length - 1] === targetWord) {
-                        showMessage('Splendid!');
-                    } else if (guesses.length === MAX_GUESSES) {
-                        showMessage(targetWord);
-                    }
-                }
-                return; // Successfully restored
+            } else if (savedState.christmasMode !== undefined) {
+                // Backward compatibility
+                christmasMode = savedState.christmasMode;
+                WORD_LENGTH = christmasMode ? 7 : 5;
+                document.body.classList.toggle('christmas-mode', christmasMode);
             }
         }
 
-        // If no saved state or invalid, start new
-        console.log('No valid saved state, starting new game');
+        rebuildBoard(); // Ensure board size is correct for current mode
+
+        // Extract game data for current mode
+        let gameData = null;
+        if (savedState) {
+            gameData = christmasMode ? savedState.christmas : savedState.classic;
+
+            // Backward compatibility for old single-state saves
+            if (!gameData && savedState.targetWord) {
+                // If we are in the mode that matches the old save, use it
+                const savedWordLength = savedState.targetWord.length;
+                if (savedWordLength === WORD_LENGTH) {
+                    gameData = savedState;
+                }
+            }
+        }
+
+        if (gameData && gameData.targetWord) {
+            // Validate word against current dictionary
+            if (!getCurrentWordList().includes(gameData.targetWord)) {
+                console.log('Saved target word invalid for current mode, starting new game');
+                startNewGame();
+                return;
+            }
+
+            targetWord = gameData.targetWord;
+            guesses = gameData.guesses || [];
+            isGameOver = gameData.isGameOver || false;
+            console.log(`Restored ${christmasMode ? 'Christmas' : 'Classic'} State:`, gameData);
+
+            // Restore board UI
+            guesses.forEach((guess, index) => {
+                const row = board.children[index];
+                const tiles = row.children;
+                for (let i = 0; i < WORD_LENGTH; i++) {
+                    tiles[i].textContent = guess[i];
+                }
+                restoreRowState(guess, index);
+            });
+
+            // Restore keyboard state from guesses
+            resetKeyboard();
+            guesses.forEach(guess => {
+                const results = Logic.evaluateGuess(guess, targetWord);
+                const guessLetters = guess.split('');
+                results.forEach((state, i) => {
+                    updateKey(guessLetters[i], state);
+                });
+            });
+
+            if (isGameOver) {
+                if (guesses[guesses.length - 1] === targetWord) {
+                    showMessage('Splendid!');
+                } else if (guesses.length === MAX_GUESSES) {
+                    showMessage(targetWord);
+                }
+            }
+            return;
+        }
+
+        // No saved state for this mode, start new
+        console.log(`No saved state for ${christmasMode ? 'Christmas' : 'Classic'} mode, starting new game`);
         startNewGame();
     }
 
@@ -313,14 +348,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function saveState() {
-        const state = {
+        // Get existing state to preserve other mode's data
+        const existingState = loadState() || {};
+
+        // Update current mode's data
+        const currentModeData = {
             targetWord,
             guesses,
             isGameOver,
-            christmasMode,
-            timestamp: Date.now() // Optional: could be used to expire games
+            timestamp: Date.now()
         };
-        localStorage.setItem('wordleState', JSON.stringify(state));
+
+        if (christmasMode) {
+            existingState.christmas = currentModeData;
+        } else {
+            existingState.classic = currentModeData;
+        }
+
+        existingState.activeMode = christmasMode ? '7' : '5';
+        existingState.christmasMode = christmasMode; // redundancy for backward compatibility logic
+
+        localStorage.setItem('wordleState', JSON.stringify(existingState));
     }
 
     function loadState() {
