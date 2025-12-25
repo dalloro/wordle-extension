@@ -224,46 +224,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function initGame() {
         const savedState = loadState();
-        if (savedState && savedState.targetWord) {
-            // Check if saved word is still valid
-            if (!getCurrentWordList().includes(savedState.targetWord)) {
-                console.log('Saved target word is no longer valid, starting new game');
-                startNewGame();
-                return;
+
+        if (savedState) {
+            // 1. Restore mode preference first
+            if (savedState.christmasMode !== undefined) {
+                christmasMode = savedState.christmasMode;
+                WORD_LENGTH = christmasMode ? 7 : 5;
+                document.body.classList.toggle('christmas-mode', christmasMode);
+                const christmasBtn = document.getElementById('christmas-btn');
+                if (christmasBtn) {
+                    christmasBtn.classList.toggle('active', christmasMode);
+                }
+                rebuildBoard();
             }
 
-            targetWord = savedState.targetWord;
-            guesses = savedState.guesses || [];
-            isGameOver = savedState.isGameOver || false;
-            console.log('Restored State:', savedState);
-
-            // Restore board
-            guesses.forEach((guess, index) => {
-                const row = board.children[index];
-                const tiles = row.children;
-                for (let i = 0; i < WORD_LENGTH; i++) {
-                    tiles[i].textContent = guess[i];
+            // 2. Restore game state if valid
+            if (savedState.targetWord) {
+                // Check if restored word is valid in current list
+                if (!getCurrentWordList().includes(savedState.targetWord)) {
+                    console.log('Saved target word is no longer valid, starting new game');
+                    startNewGame();
+                    return;
                 }
-                // Re-calculate state for visual consistency
-                restoreRowState(guess, index);
-            });
 
-            if (isGameOver) {
-                if (guesses[guesses.length - 1] === targetWord) {
-                    showMessage('Splendid!');
-                } else if (guesses.length === MAX_GUESSES) {
-                    showMessage(targetWord);
+                targetWord = savedState.targetWord;
+                guesses = savedState.guesses || [];
+                isGameOver = savedState.isGameOver || false;
+                console.log('Restored State:', savedState);
+
+                // Restore board UI
+                guesses.forEach((guess, index) => {
+                    const row = board.children[index];
+                    const tiles = row.children;
+                    for (let i = 0; i < WORD_LENGTH; i++) {
+                        tiles[i].textContent = guess[i];
+                    }
+                    restoreRowState(guess, index);
+                });
+
+                if (isGameOver) {
+                    if (guesses[guesses.length - 1] === targetWord) {
+                        showMessage('Splendid!');
+                    } else if (guesses.length === MAX_GUESSES) {
+                        showMessage(targetWord);
+                    }
                 }
+                return; // Successfully restored
             }
-        } else {
-            console.log('No saved state or invalid state, starting new game');
-            startNewGame();
         }
-        if (!targetWord) {
-            console.error('Target word is missing after init!');
-            startNewGame();
-        }
-        console.log('Target Word:', targetWord);
+
+        // If no saved state or invalid, start new
+        console.log('No valid saved state, starting new game');
+        startNewGame();
     }
 
     function startNewGame() {
@@ -305,6 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
             targetWord,
             guesses,
             isGameOver,
+            christmasMode,
             timestamp: Date.now() // Optional: could be used to expire games
         };
         localStorage.setItem('wordleState', JSON.stringify(state));
