@@ -1,6 +1,6 @@
 const Logic = {
     evaluateGuess: (guess, target) => {
-        const result = new Array(5).fill('absent');
+        const result = new Array(target.length).fill('absent');
         const targetLetters = target.split('');
         const guessLetters = guess.split('');
 
