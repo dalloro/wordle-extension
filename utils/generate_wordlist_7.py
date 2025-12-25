@@ -65,6 +65,7 @@ def main():
     # Download from word list sources
     sources = [
         "https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt",
+        "https://raw.githubusercontent.com/first20hours/google-10000-english/master/google-10000-english-no-swears.txt",
     ]
 
     for url in sources:
