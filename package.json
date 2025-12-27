@@ -21,6 +21,12 @@
                 }
             ],
             [
+                "@semantic-release/exec",
+                {
+                    "prepareCmd": "bash utils/build.sh ${nextRelease.version} && sed -i 's|releases/latest/download/wordle-extension[^)]*|releases/latest/download/wordle-extension-v${nextRelease.version}.zip|' README.md"
+                }
+            ],
+            [
                 "@semantic-release/npm",
                 {
                     "npmPublish": false
@@ -31,7 +37,8 @@
                 {
                     "assets": [
                         "package.json",
-                        "CHANGELOG.md"
+                        "CHANGELOG.md",
+                        "README.md"
                     ],
                     "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
                 }
@@ -41,7 +48,7 @@
                 {
                     "assets": [
                         {
-                            "path": "wordle-extension.zip",
+                            "path": "wordle-extension-v*.zip",
                             "label": "Wordle Extension ZIP"
                         }
                     ]

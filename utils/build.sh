@@ -7,7 +7,16 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="$PROJECT_DIR/dist"
-ZIP_NAME="wordle-extension.zip"
+VERSION=$1
+if [ ! -z "$VERSION" ]; then
+    # Prefix with 'v' if not present
+    if [[ ! $VERSION =~ ^v ]]; then
+        VERSION="v$VERSION"
+    fi
+    ZIP_NAME="wordle-extension-$VERSION.zip"
+else
+    ZIP_NAME="wordle-extension.zip"
+fi
 
 echo "Building Wordle Extension..."
 
