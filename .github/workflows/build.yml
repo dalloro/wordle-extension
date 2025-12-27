@@ -23,29 +23,15 @@ jobs:
     - name: Run build script
       run: npm run build
 
-    - name: Create Tag
+    - name: Semantic Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      id: tag_version
-      uses: anothrNick/github-tag-action@1.64.0
+      uses: cycjimmy/semantic-release-action@v4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        WITH_V: true
-        DEFAULT_BUMP: patch
-
-    - name: Create Release
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: softprops/action-gh-release@v2
       with:
-        files: wordle-extension.zip
-        tag_name: ${{ steps.tag_version.outputs.new_tag }}
-        name: Release ${{ steps.tag_version.outputs.new_tag }}
-        body: |
-          Automatically generated release for ${{ steps.tag_version.outputs.new_tag }}.
-          
-          Change Log:
-          ${{ github.event.head_commit.message }}
-        prerelease: false
-        make_latest: true
+        extra_plugins: |
+          @semantic-release/changelog
+          @semantic-release/git
 
     - name: Upload zip artifact
       uses: actions/upload-artifact@v4

@@ -57,6 +57,22 @@ This repository uses **GitHub Actions** to automatically build and package the e
 - Each successful build produces a `wordle-extension.zip` artifact.
 - You can find these artifacts in the **Actions** tab of the GitHub repository.
 
+## Contribution & Versioning
+
+This project follows the **Conventional Commits** standard for versioning and changelog generation. Please use the following prefixes for your commit messages:
+
+- `feat:` for new features (bumps **Minor** version, e.g., 1.0.0 → 1.1.0)
+- `fix:` for bug fixes (bumps **Patch** version, e.g., 1.0.0 → 1.0.1)
+- `perf:` for performance improvements
+- `docs:` for documentation changes
+- `chore:` for maintenance tasks
+- `BREAKING CHANGE:` in the footer for breaking changes (bumps **Major** version)
+
+Example:
+```bash
+git commit -m "feat: add dark mode support"
+```
+
 ## Files
 
 | File | Description |
