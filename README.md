@@ -29,6 +29,32 @@ A Chrome extension that lets you play Wordle directly from your browser toolbar!
 - Click the **calendar icon** to play the official NYT Word of the Day
 - Click the **chart icon** to view your statistics
 
+## Build & Distribution
+
+To package the extension for distribution:
+
+1. Ensure you have `bash` and `zip` installed.
+2. Run the build script:
+   ```bash
+   npm run build
+   ```
+   Or run it directly:
+   ```bash
+   bash utils/build.sh
+   ```
+
+This will:
+- Clean the `dist/` directory.
+- Copy all required files into `dist/`.
+- Create a `wordle-extension.zip` file in the root directory.
+
+## Automated CI/CD
+
+This repository uses **GitHub Actions** to automatically build and package the extension on every push to the `main` branch. 
+
+- Each successful build produces a `wordle-extension.zip` artifact.
+- You can find these artifacts in the **Actions** tab of the GitHub repository.
+
 ## Files
 
 | File | Description |

@@ -1,0 +1,27 @@
+name: Build and Package Extension
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up bash
+      run: |
+        chmod +x utils/build.sh
+
+    - name: Run build script
+      run: npm run build
+
+    - name: Upload zip artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: wordle-extension
+        path: wordle-extension.zip

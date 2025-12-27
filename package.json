@@ -1,0 +1,10 @@
+{
+    "name": "wordle-extension",
+    "version": "1.0.0",
+    "description": "Chrome extension for Wordle",
+    "scripts": {
+        "build": "bash utils/build.sh"
+    },
+    "author": "Livio",
+    "license": "MIT"
+}
