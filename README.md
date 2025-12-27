@@ -2,6 +2,8 @@
 
 A Chrome extension that lets you play Wordle directly from your browser toolbar!
 
+[![Download Latest ZIP](https://img.shields.io/badge/Download-Latest%20ZIP-brightgreen?style=for-the-badge&logo=github)](https://github.com/dalloro/wordle-extension/releases/latest/download/wordle-extension.zip)
+
 ## Features
 
 - 🎮 Classic Wordle gameplay with 6 guesses

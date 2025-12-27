@@ -10,6 +10,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
     - uses: actions/checkout@v4
 
@@ -19,6 +22,17 @@ jobs:
 
     - name: Run build script
       run: npm run build
+
+    - name: Create Release
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      uses: softprops/action-gh-release@v2
+      with:
+        files: wordle-extension.zip
+        tag_name: latest
+        name: Latest Build
+        body: "Automatically generated build from the latest commit on main."
+        prerelease: false
+        make_latest: true
 
     - name: Upload zip artifact
       uses: actions/upload-artifact@v4
