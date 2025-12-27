@@ -38,9 +38,10 @@ jobs:
         extra_plugins: |
           @semantic-release/changelog
           @semantic-release/git
+          @semantic-release/exec
 
     - name: Upload zip artifact
       uses: actions/upload-artifact@v4
       with:
         name: wordle-extension
-        path: wordle-extension.zip
+        path: wordle-extension-v*.zip
