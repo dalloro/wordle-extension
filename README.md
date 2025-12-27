@@ -5,7 +5,7 @@ A Chrome extension that lets you play Wordle directly from your browser toolbar!
 The easiest way to play is to install the Chrome Extension: 
 [![Download Latest ZIP](https://img.shields.io/badge/Download-Latest%20ZIP-brightgreen?style=for-the-badge&logo=github)](https://github.com/dalloro/wordle-extension/releases/latest/download/wordle-extension-v1.2.0.zip)
 
-*To install: Download the zip, hexport it, go to `chrome://extensions/`, enable "Developer Mode", and click "Load unpacked" on the folder.*
+*To install: Download the zip, extract it into a folder, go to `chrome://extensions/`, enable "Developer Mode", and click "Load unpacked" on the folder.*
 
 ## Features
 
